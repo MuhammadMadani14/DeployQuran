@@ -26,8 +26,8 @@ public class UserController {
     @Autowired
     UsersRepository usersRepository;
 
-    @GetMapping("/user/{id}")
-    public Optional<Users> getUserById(@PathVariable Long id){
+    @GetMapping("/user")
+    public Optional<Users> getUserById(@RequestParam Long id){
         return userService.getUserById(id);
     }
 
