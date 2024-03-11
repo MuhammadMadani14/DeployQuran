@@ -26,9 +26,15 @@ public class UserController {
     @Autowired
     UsersRepository usersRepository;
 
-    @GetMapping("/user")
-    public Optional<Users> getUserById(@RequestParam Long id){
-        return userService.getUserById(id);
+    @GetMapping("/user/{userId}")
+//    @PreAuthorize("hasAnyRole('BUYER', 'ADMIN')")
+    public ResponseEntity<Users> getUserById(@PathVariable(value = "userId") Long id) {
+        Optional<Users> userData = userService.getUserById(id);
+        if (userData.isPresent()) {
+            return new ResponseEntity<>(userData.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/getEmailUser")
