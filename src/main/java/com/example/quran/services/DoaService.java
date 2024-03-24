@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -53,6 +54,42 @@ public class DoaService {
             dataList.add(doaData);
         }
         doaResponse.setData(dataList);
+        return doaResponse;
+    }
+
+    public DoaResponse getDetailDoa(Long id){
+        DoaResponse doaResponse = new DoaResponse();
+        List<DoaData> dataList = new ArrayList<>();
+
+        // Menginisialisasi pesan respons
+        MessageResponse messageResponse;
+
+        // Mencari objek Doa berdasarkan ID
+        Optional<Doa> optionalDoa = doaRepository.findById(id);
+
+        // Memeriksa apakah objek Doa ditemukan
+        if (optionalDoa.isPresent()) {
+            Doa doa = optionalDoa.get();
+            // Mengatur data doa ke dalam DoaData
+            DoaData data = new DoaData();
+            data.setId(doa.getId());
+            data.setDoaName(doa.getTypeDoa());
+            data.setArabDoa(doa.getArabDoa());
+            data.setTranslateDoa(doa.getTranslateDoa());
+            // Menambahkan DoaData ke dalam dataList
+            dataList.add(data);
+
+            // Mengatur pesan respons ke "Success" jika objek Doa ditemukan
+            messageResponse = new MessageResponse(false, "Success");
+        } else {
+            // Mengatur pesan respons ke "Doa not found" jika objek Doa tidak ditemukan
+            messageResponse = new MessageResponse(true, "Doa not found");
+        }
+
+        // Mengatur pesan respons ke dalam DoaResponse
+        doaResponse.setMessageResponse(messageResponse);
+        doaResponse.setData(dataList);
+
         return doaResponse;
     }
 

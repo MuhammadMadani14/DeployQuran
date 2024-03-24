@@ -7,11 +7,9 @@ import com.example.quran.response.MessageResponse;
 import com.example.quran.services.DoaService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,4 +33,10 @@ public class DoaController {
 //    public ResponseEntity<DoaResponse> getDetailDoa(@RequestParam Long id){
 //        return ResponseEntity.ok(doaService.getDoaDetail(id));
 //    }
+    @GetMapping("/doa/{id}")
+    public ResponseEntity<DoaResponse> getDetailDoa(@PathVariable Long id) {
+    DoaResponse doaResponse = doaService.getDetailDoa(id);
+    return new ResponseEntity<>(doaResponse, HttpStatus.OK);
+
+}
 }
