@@ -21,7 +21,7 @@ public class DoaController {
     @Autowired
     DoaService doaService;
 
-    @GetMapping
+    @GetMapping("/listDoa")
     public ResponseEntity<DoaResponse> getListDoa(){
         return ResponseEntity.ok(doaService.getListDoa());
     }
