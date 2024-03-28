@@ -1,8 +1,10 @@
 package com.example.quran.services;
 
 import com.example.quran.data.DoaData;
+import com.example.quran.dto.DetailDoa;
 import com.example.quran.model.Doa;
 import com.example.quran.repository.DoaRepository;
+import com.example.quran.response.DetailDoaResponse;
 import com.example.quran.response.DoaResponse;
 import com.example.quran.response.MessageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,9 +59,9 @@ public class DoaService {
         return doaResponse;
     }
 
-    public DoaResponse getDetailDoa(Long id){
-        DoaResponse doaResponse = new DoaResponse();
-        List<DoaData> dataList = new ArrayList<>();
+    public DetailDoaResponse getDetailDoa(Long id){
+        DetailDoaResponse detailDoaResponse = new DetailDoaResponse();
+        List<DetailDoa> dataList = new ArrayList<>();
 
         // Menginisialisasi pesan respons
         MessageResponse messageResponse;
@@ -71,8 +73,8 @@ public class DoaService {
         if (optionalDoa.isPresent()) {
             Doa doa = optionalDoa.get();
             // Mengatur data doa ke dalam DoaData
-            DoaData data = new DoaData();
-            data.setId(doa.getId());
+            DetailDoa data = new DetailDoa();
+            data.setId(Long.toString(doa.getId()));
             data.setDoaName(doa.getTypeDoa());
             data.setArabDoa(doa.getArabDoa());
             data.setTranslateDoa(doa.getTranslateDoa());
@@ -87,10 +89,10 @@ public class DoaService {
         }
 
         // Mengatur pesan respons ke dalam DoaResponse
-        doaResponse.setMessageResponse(messageResponse);
-        doaResponse.setData(dataList);
+        detailDoaResponse.setMessageResponse(messageResponse);
+        detailDoaResponse.setDoa(dataList);
 
-        return doaResponse;
+        return detailDoaResponse;
     }
 
 //    public DoaResponse getDoaDetail(Long title){

@@ -2,6 +2,7 @@ package com.example.quran.controller;
 
 import com.example.quran.model.Ayah;
 import com.example.quran.model.Doa;
+import com.example.quran.response.DetailDoaResponse;
 import com.example.quran.response.DoaResponse;
 import com.example.quran.response.MessageResponse;
 import com.example.quran.services.DoaService;
@@ -34,9 +35,9 @@ public class DoaController {
 //        return ResponseEntity.ok(doaService.getDoaDetail(id));
 //    }
     @GetMapping("/doa/{id}")
-    public ResponseEntity<DoaResponse> getDetailDoa(@PathVariable Long id) {
-    DoaResponse doaResponse = doaService.getDetailDoa(id);
-    return new ResponseEntity<>(doaResponse, HttpStatus.OK);
+    public ResponseEntity<DetailDoaResponse> getDetailDoa(@PathVariable Long id) {
+        DetailDoaResponse doaResponse = doaService.getDetailDoa(id);
+        return new ResponseEntity<>(doaResponse, HttpStatus.OK);
 
-}
+    }
 }
