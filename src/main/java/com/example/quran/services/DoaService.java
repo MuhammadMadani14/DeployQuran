@@ -34,7 +34,7 @@ public class DoaService {
         List<DoaData> dataList = new ArrayList<>();
         for (Doa doa : doaList) {
             DoaData doaData = new DoaData();
-            doaData.setId(doa.getId());
+            doaData.setId(doa.getId().toString());
             doaData.setDoaName(doa.getTypeDoa());
             dataList.add(doaData);
         }
@@ -51,7 +51,7 @@ public class DoaService {
         List<DoaData> dataList = new ArrayList<>();
         for(Doa doa : doaList){
             DoaData doaData = new DoaData();
-            doaData.setId(doa.getId());
+            doaData.setId(doa.getId().toString());
             doaData.setDoaName(doa.getTypeDoa());
             dataList.add(doaData);
         }
