@@ -44,7 +44,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getTeacherRole());
     }
     @GetMapping("/guru/{userId}")
-    public ResponseEntity<DetailRoleResponse> getTeacherById(@PathVariable Long userId) {
+    public ResponseEntity<?> getTeacherById(@PathVariable Long userId) {
         DetailRoleResponse teacherDetail = userService.getTeacherRoleDetail(userId);
         if (teacherDetail == null) {
             return ResponseEntity.notFound().build();
