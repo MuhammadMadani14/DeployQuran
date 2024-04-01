@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -36,6 +37,10 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+    }
+    @GetMapping("/guru")
+    public ResponseEntity<List<?>> getTeacherUsers(){
+        return ResponseEntity.ok(userService.getTeacherRole());
     }
 
     @GetMapping("/getEmailUser")

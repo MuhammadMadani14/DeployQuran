@@ -1,5 +1,6 @@
 package com.example.quran.repository;
 
+import com.example.quran.model.ERole;
 import com.example.quran.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,5 +31,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     @Transactional
     @Query("UPDATE Users u SET u.password = :newPassword WHERE u.email = :email")
     void updatePasswordByEmail(String email, String newPassword);
+
+    List<Users> findByRolesName(ERole role);
 
 }

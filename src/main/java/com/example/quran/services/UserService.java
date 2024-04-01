@@ -1,7 +1,11 @@
 package com.example.quran.services;
 
+import com.example.quran.model.ERole;
+import com.example.quran.model.Role;
 import com.example.quran.model.Users;
+import com.example.quran.repository.RoleRepository;
 import com.example.quran.repository.UsersRepository;
+import com.example.quran.response.DetailRoleResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,7 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -24,6 +28,9 @@ public class UserService {
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    RoleRepository roleRepository;
 
 
     public Optional<Users> getUserById(Long id){
@@ -55,6 +62,46 @@ public class UserService {
         }
 
 
+    }
+
+    public List<DetailRoleResponse> getTeacherRole(){
+        ERole roleTeacher = ERole.ROLE_TEACHER;
+        Optional<Role> roleOptional = roleRepository.findByName(roleTeacher);
+
+        if (roleOptional.isPresent()) { // Periksa apakah role ditemukan
+            Role role = roleOptional.get(); // Dapatkan nilai dari Optional<Role>
+
+            // Dapatkan daftar pengguna dengan peran yang sesuai
+            List<Users> usersWithRole = usersRepository.findByRolesName(role.getName());
+
+            // Buat daftar DetailRoleResponse untuk diisi
+            List<DetailRoleResponse> detailRoles = new ArrayList<>();
+
+            // Isi detailRoles dengan informasi pengguna
+            for (Users user : usersWithRole) {
+                DetailRoleResponse detailRoleResponse = new DetailRoleResponse();
+                detailRoleResponse.setId(user.getId().toString());
+                detailRoleResponse.setUsername(user.getUsername());
+                detailRoleResponse.setEmail(user.getEmail());
+                detailRoleResponse.setPhotoPath(user.getPhotoPath());
+                detailRoleResponse.setRoles(convertSetToList(user.getRoles()));
+
+                detailRoles.add(detailRoleResponse);
+            }
+
+            return detailRoles;
+        } else {
+            // Lakukan penanganan jika role tidak ditemukan, misalnya lempar pengecualian atau kembalikan daftar kosong
+            return Collections.emptyList();
+        }
+    }
+
+    private List<String> convertSetToList(Set<Role> rolesSet) {
+        List<String> rolesList = new ArrayList<>();
+        for (Role role : rolesSet) {
+            rolesList.add(role.getName().name());
+        }
+        return rolesList;
     }
     public void changePhoto(Long id, MultipartFile file) throws Exception{
         uploadPhoto(id, file);
