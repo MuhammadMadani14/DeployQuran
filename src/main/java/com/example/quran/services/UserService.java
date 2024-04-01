@@ -1,11 +1,14 @@
 package com.example.quran.services;
 
+import com.example.quran.data.RoleData;
 import com.example.quran.model.ERole;
 import com.example.quran.model.Role;
 import com.example.quran.model.Users;
 import com.example.quran.repository.RoleRepository;
 import com.example.quran.repository.UsersRepository;
 import com.example.quran.response.DetailRoleResponse;
+import com.example.quran.response.MessageResponse;
+import com.example.quran.response.RoleResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -64,51 +67,61 @@ public class UserService {
 
     }
 
-    public DetailRoleResponse getTeacherRole(Long userId){
+    public DetailRoleResponse getTeacherRoleDetail(Long userId){
         Users teacher = usersRepository.findById(userId).orElse(null);
         if (teacher == null) {
             return null;
         }
         DetailRoleResponse teacherDetail = new DetailRoleResponse();
-        teacherDetail.setId(teacher.getId().toString());
-        teacherDetail.setUsername(teacher.getUsername());
-        teacherDetail.setEmail(teacher.getEmail());
-        teacherDetail.setPhotoPath(teacher.getPhotoPath());
-        teacherDetail.setRoles(convertSetToList(teacher.getRoles()));
+        MessageResponse messageResponse = new MessageResponse(false, "Success");
+        RoleData roleData = new RoleData();
+        roleData.setId(teacher.getId().toString());
+        roleData.setUsername(teacher.getUsername());
+        roleData.setEmail(teacher.getEmail());
+        roleData.setPhotoPath(teacher.getPhotoPath());
+        roleData.setRoles(convertSetToList(teacher.getRoles()));
+        teacherDetail.setMessageResponse(messageResponse);
+        teacherDetail.setData(roleData);
         return teacherDetail;
     }
 
-    public List<DetailRoleResponse> getTeacherRole(){
+    public RoleResponse getTeacherRole() {
         ERole roleTeacher = ERole.ROLE_TEACHER;
         Optional<Role> roleOptional = roleRepository.findByName(roleTeacher);
 
-        if (roleOptional.isPresent()) { // Periksa apakah role ditemukan
-            Role role = roleOptional.get(); // Dapatkan nilai dari Optional<Role>
-
-            // Dapatkan daftar pengguna dengan peran yang sesuai
+        if (roleOptional.isPresent()) {
+            Role role = roleOptional.get();
             List<Users> usersWithRole = usersRepository.findByRolesName(role.getName());
+            List<RoleData> teacherList = new ArrayList<>();
 
-            // Buat daftar DetailRoleResponse untuk diisi
-            List<DetailRoleResponse> detailRoles = new ArrayList<>();
-
-            // Isi detailRoles dengan informasi pengguna
-            for (Users user : usersWithRole) {
-                DetailRoleResponse detailRoleResponse = new DetailRoleResponse();
-                detailRoleResponse.setId(user.getId().toString());
-                detailRoleResponse.setUsername(user.getUsername());
-                detailRoleResponse.setEmail(user.getEmail());
-                detailRoleResponse.setPhotoPath(user.getPhotoPath());
-                detailRoleResponse.setRoles(convertSetToList(user.getRoles()));
-
-                detailRoles.add(detailRoleResponse);
+            if (usersWithRole.isEmpty()) {
+                RoleResponse emptyResponse = new RoleResponse();
+                emptyResponse.setMessageResponse(new MessageResponse(true, "No teachers found"));
+                return emptyResponse;
             }
 
-            return detailRoles;
+            RoleResponse detailRoleResponse = new RoleResponse();
+            MessageResponse messageResponse = new MessageResponse(false, "Success");
+
+            for (Users user : usersWithRole) {
+                RoleData roleData = new RoleData();
+                roleData.setId(user.getId().toString());
+                roleData.setUsername(user.getUsername());
+                roleData.setEmail(user.getEmail());
+                roleData.setPhotoPath(user.getPhotoPath());
+                roleData.setRoles(convertSetToList(user.getRoles()));
+                teacherList.add(roleData);
+            }
+
+            detailRoleResponse.setMessageResponse(messageResponse);
+            detailRoleResponse.setData(teacherList);
+            return detailRoleResponse;
         } else {
-            // Lakukan penanganan jika role tidak ditemukan, misalnya lempar pengecualian atau kembalikan daftar kosong
-            return Collections.emptyList();
+            // Lakukan penanganan jika role tidak ditemukan
+            return null;
         }
     }
+
 
     private List<String> convertSetToList(Set<Role> rolesSet) {
         List<String> rolesList = new ArrayList<>();

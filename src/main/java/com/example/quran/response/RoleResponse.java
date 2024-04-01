@@ -3,8 +3,10 @@ package com.example.quran.response;
 import com.example.quran.data.RoleData;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-public class DetailRoleResponse {
+public class RoleResponse {
     private MessageResponse messageResponse;
-    private RoleData data;
+    private List<RoleData> data;
 }
