@@ -4,6 +4,7 @@ import com.example.quran.dto.ChangePasswordRequest;
 import com.example.quran.dto.UserDTO;
 import com.example.quran.model.Users;
 import com.example.quran.repository.UsersRepository;
+import com.example.quran.response.DetailRoleResponse;
 import com.example.quran.services.UserService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,14 @@ public class UserController {
     @GetMapping("/guru")
     public ResponseEntity<List<?>> getTeacherUsers(){
         return ResponseEntity.ok(userService.getTeacherRole());
+    }
+    @GetMapping("/guru/{userId}")
+    public ResponseEntity<DetailRoleResponse> getTeacherById(@PathVariable Long userId) {
+        DetailRoleResponse teacherDetail = userService.getTeacherRole(userId);
+        if (teacherDetail == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(teacherDetail);
     }
 
     @GetMapping("/getEmailUser")

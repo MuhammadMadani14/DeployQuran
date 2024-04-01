@@ -64,6 +64,20 @@ public class UserService {
 
     }
 
+    public DetailRoleResponse getTeacherRole(Long userId){
+        Users teacher = usersRepository.findById(userId).orElse(null);
+        if (teacher == null) {
+            return null;
+        }
+        DetailRoleResponse teacherDetail = new DetailRoleResponse();
+        teacherDetail.setId(teacher.getId().toString());
+        teacherDetail.setUsername(teacher.getUsername());
+        teacherDetail.setEmail(teacher.getEmail());
+        teacherDetail.setPhotoPath(teacher.getPhotoPath());
+        teacherDetail.setRoles(convertSetToList(teacher.getRoles()));
+        return teacherDetail;
+    }
+
     public List<DetailRoleResponse> getTeacherRole(){
         ERole roleTeacher = ERole.ROLE_TEACHER;
         Optional<Role> roleOptional = roleRepository.findByName(roleTeacher);
